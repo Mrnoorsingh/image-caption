@@ -66,6 +66,8 @@ The model can be divided into 3 modules
     <em>a man wearing a harness climbs a rock face .</em>
 </p>
 
+## Evaluation
+The model has achieved **BLEU** Score of almost ```0.49```. Bleu Score is a metric used to compare generated sentences to their corresponding reference sentences. A perfect match results in bleu score of 1.0 whereas a perfect mismatch results in bleuscore of 0.0
 
 ## References
 https://arxiv.org/abs/1411.4555
