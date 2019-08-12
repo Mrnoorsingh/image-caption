@@ -1,16 +1,13 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[3]:
-
 
 from collections import Counter
 from string import digits
 from keras.preprocessing import sequence
 import pickle
+import numpy as np
 
-
-# In[4]:
 
 
 def build_vocab(sentences,threshold):
@@ -37,8 +34,6 @@ def build_vocab(sentences,threshold):
         
 
 
-# In[5]:
-
 
 def max_sequence(description): 
     #find description with maximum length
@@ -51,18 +46,15 @@ def max_sequence(description):
             
 
 
-# In[6]:
-
-
-def data_generator(batch_size,pd_frame,word2id,clean_desc):
+def data_generator(encoded_img,frame,max_len,batch_size,word2id,clean_desc):
     images=[]
     partial_seq=[]
-    next_word=[]
+    next_words=[]
     batch_count=0
     while True:
     
-        for idx in range(len(pd_frame)):
-            encoded_image=encoded_img[pd_frame[idx][0]]
+        for idx in range(len(frame)):
+            encoded_image=encoded_img[frame[idx][0]]
             encoded_txt=[word2id[text] for text in clean_desc[idx].split()]
             for i in range(1,len(encoded_txt)):
                 batch_count+=1
@@ -70,12 +62,16 @@ def data_generator(batch_size,pd_frame,word2id,clean_desc):
                 next_words.append(encoded_txt[i])
                 images.append(encoded_image)
                 
-                if batch_count==batch_size:
+                if batch_count>=batch_size:
                     batch_count=0
-                    partial_seq=sequence.pad_sequences(partial_seq,max_len,padding="post")#returns zero padded sequence
+                    #returns zero padded sequence
+                    partial_seq=sequence.pad_sequences(partial_seq,max_len,padding="post")
+                    
+                    #one hot encoding for target words
                     hotvector = np.zeros([len(next_words), vocab_size])
                     for i,next_word in enumerate(next_words):
                         hotvector[i,next_word]=1
+                        
                     images=np.asarray(images)
                     next_words=np.asarray(hotvector)
                      
